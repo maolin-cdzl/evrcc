@@ -1,0 +1,4 @@
+#!/bin/sh
+
+swig -csharp -namespace "Evrcc" -dllimport evrcc -outdir csharp -o ./libevrcc.c evrcc.csharp.i
+

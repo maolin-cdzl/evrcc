@@ -1,0 +1,9 @@
+APP_ABI := armeabi-v7a
+APP_PLATFORM := android-14
+#APP_OPTIM := debug 
+APP_MODULES := libevrcc evrcodec asmtest 
+#NDK_TOOLCHAIN := arm-linux-androideabi-4.6
+NDK_TOOLCHAIN := arm-linux-androideabi-4.8
+#NDK_TOOLCHAIN := arm-linux-androideabi-clang3.3
+#NDK_TOOLCHAIN := llvm-3.4
+APP_STL := stlport_static 
