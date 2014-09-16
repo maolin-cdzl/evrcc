@@ -1,9 +1,8 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11)
 project(evrcc)
 
-#file(GLOB_RECURSE EVRCC_HEADER "*.h")
-
-
+include(CMakeSymbols)
+include(CMakeStdOpt)
 
 set(DSP_MATH_DIR dspmath)
 set(DSP_MATH_SRC
@@ -73,27 +72,24 @@ set(CODE_SRC
 
 set(EVRCC_SRC ${DSP_MATH_SRC} ${CODE_SRC} evrcc.c evrcpacket.c)
 
-if( NOT WIN32)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden -g")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -g")
-endif()
-
-include_directories(include ${CODE_DIR} ${DSP_MATH_DIR})
-
 add_library(evrcc SHARED ${EVRCC_SRC} ${EVRCC_HEADER})
+target_compile_options(evrcc PRIVATE "-fvisibility=hidden")
+target_include_directories(evrcc 
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+	PRIVATE include
+	PRIVATE ${DSP_MATH_DIR}
+	PRIVATE ${CODE_DIR}
+	)
+
 install(TARGETS evrcc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
-if( NOT WIN32)
 target_link_libraries(evrcc m)
-endif()
 
 add_executable(evrc_codec evrc_codec.cpp)
 target_link_libraries(evrc_codec evrcc)
 
-if( NOT WIN32)
 target_link_libraries(evrc_codec m tcmalloc_and_profiler) 
-endif()
 
 install(TARGETS evrc_codec DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
-#add_symbols(evrcc)
+add_symbols(evrcc)
