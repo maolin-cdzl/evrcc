@@ -1,7 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11)
 project(evrcc)
 
-include(CMakeSymbols)
 include(CMakeStdOpt)
 
 set(DSP_MATH_DIR dspmath)
@@ -76,7 +75,7 @@ add_library(evrcc SHARED ${EVRCC_SRC} ${EVRCC_HEADER})
 target_compile_options(evrcc PRIVATE "-fvisibility=hidden")
 target_include_directories(evrcc 
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-	PRIVATE include
+	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
 	PRIVATE ${DSP_MATH_DIR}
 	PRIVATE ${CODE_DIR}
 	)
@@ -85,11 +84,14 @@ install(TARGETS evrcc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 target_link_libraries(evrcc m)
 
-add_executable(evrc_codec evrc_codec.cpp)
-target_link_libraries(evrc_codec evrcc)
+if( BUILD_CODER )
+	add_executable(evrc_codec evrc_codec.cpp)
+	target_link_libraries(evrc_codec evrcc)
+	target_link_libraries(evrc_codec m tcmalloc_and_profiler) 
+	install(TARGETS evrc_codec DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+endif()
 
-target_link_libraries(evrc_codec m tcmalloc_and_profiler) 
-
-install(TARGETS evrc_codec DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-
-add_symbols(evrcc)
+if( HAS_BREAKPAD )
+	include(CMakeSymbols)
+	add_symbols(evrcc)
+endif()

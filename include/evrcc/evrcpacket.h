@@ -12,6 +12,8 @@
 //#include "ptt-config.h"
 //#endif
 
+#include "evrcc/evrc_export.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,12 +42,12 @@ typedef struct _Evrc8KFrame {
 
 #define EVRC8K_MAX_PACKET_FRAMES		0xFF
 
-size_t evrc8k_frame_rate_bytes(uint8_t rate);
+DLL_PUBLIC size_t evrc8k_frame_rate_bytes(uint8_t rate);
 
-size_t evrc8k_packet_packet(uint8_t* packet,const Evrc8KFrame* frames,size_t frame_count);
-size_t evrc8k_packet_unpacket(Evrc8KFrame* frames,size_t max_frame_count,const uint8_t* packet,size_t packet_size);
+DLL_PUBLIC size_t evrc8k_packet_packet(uint8_t* packet,const Evrc8KFrame* frames,size_t frame_count);
+DLL_PUBLIC size_t evrc8k_packet_unpacket(Evrc8KFrame* frames,size_t max_frame_count,const uint8_t* packet,size_t packet_size);
 
-size_t evrc8k_frames_of_packet(const uint8_t* packet,size_t size);
+DLL_PUBLIC size_t evrc8k_frames_of_packet(const uint8_t* packet,size_t size);
 
 
 typedef struct {
@@ -61,8 +63,8 @@ typedef struct {
 	const uint8_t*		frame;
 } Evrc8KPacketParser;
 
-int evrc8k_packet_init_parser(const uint8_t* packet,size_t packet_size,Evrc8KPacketParser* parser);
-int evrc8k_packet_next_frame(Evrc8KPacketParser* parser);
+DLL_PUBLIC int evrc8k_packet_init_parser(const uint8_t* packet,size_t packet_size,Evrc8KPacketParser* parser);
+DLL_PUBLIC int evrc8k_packet_next_frame(Evrc8KPacketParser* parser);
 
 typedef struct {
 	size_t				buffer_size;
@@ -75,9 +77,9 @@ typedef struct {
 	size_t				pos;
 } Evrc8KPacketAppender;
 
-int evrc8k_packet_init_appender(uint8_t* buffer,size_t buffer_size,size_t frame_count,Evrc8KPacketAppender* appender);
-int evrc8k_packet_append_frame(Evrc8KPacketAppender* appender,const Evrc8KFrame* frame);
-int evrc8k_packet_append_frame_raw(Evrc8KPacketAppender* appender,uint8_t rate,const uint8_t* frame);
+DLL_PUBLIC int evrc8k_packet_init_appender(uint8_t* buffer,size_t buffer_size,size_t frame_count,Evrc8KPacketAppender* appender);
+DLL_PUBLIC int evrc8k_packet_append_frame(Evrc8KPacketAppender* appender,const Evrc8KFrame* frame);
+DLL_PUBLIC int evrc8k_packet_append_frame_raw(Evrc8KPacketAppender* appender,uint8_t rate,const uint8_t* frame);
 
 
 #ifdef __cplusplus

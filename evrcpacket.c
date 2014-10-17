@@ -1,5 +1,5 @@
-#include "evrcpacket.h"
 #include <string.h>
+#include "evrcc/evrcpacket.h"
 
 #ifndef MEMCPY
 #define MEMCPY	memcpy
@@ -18,7 +18,7 @@
 
 #define EVRC8K_HEADER_BITS_MARK(frame_index,rate)	( ((rate) & 0x3) << EVRC8K_HEADER_BITS_OFFSET(frame_index))
 
-size_t evrc8k_frame_rate_bytes(uint8_t rate) {
+DLL_PUBLIC size_t evrc8k_frame_rate_bytes(uint8_t rate) {
 	const size_t frame_size[] = { EVRC8K_EIGHT_SIZE,EVRC8K_CUSTOM_SIZE,EVRC8K_HALF_SIZE,EVRC8K_FULL_SIZE };
 	rate &= 0x3;
 	if( rate < 4 ) {
@@ -28,13 +28,13 @@ size_t evrc8k_frame_rate_bytes(uint8_t rate) {
 	}
 }
 
-size_t evrc8k_packet_header_size(size_t frame_count) {
+DLL_PUBLIC size_t evrc8k_packet_header_size(size_t frame_count) {
 	if( frame_count > EVRC8K_MAX_PACKET_FRAMES )
 		return 0;
 	return 1 + ((frame_count + 3) / 4);
 }
 
-size_t evrc8k_packet_packet(uint8_t* packet,const Evrc8KFrame* frames,size_t frame_count) {
+DLL_PUBLIC size_t evrc8k_packet_packet(uint8_t* packet,const Evrc8KFrame* frames,size_t frame_count) {
 	const size_t frame_size[] = { EVRC8K_EIGHT_SIZE,EVRC8K_CUSTOM_SIZE,EVRC8K_HALF_SIZE,EVRC8K_FULL_SIZE };
 	size_t i = 0;
 	uint8_t* ptr_frames_header = NULL;
@@ -62,7 +62,7 @@ size_t evrc8k_packet_packet(uint8_t* packet,const Evrc8KFrame* frames,size_t fra
 	return EVRC8K_PACKET_HEADER_SIZE(frame_count) + data_size;
 }
 
-size_t evrc8k_packet_unpacket(Evrc8KFrame* frames,size_t max_frame_count,const uint8_t* packet,size_t packet_size) {
+DLL_PUBLIC size_t evrc8k_packet_unpacket(Evrc8KFrame* frames,size_t max_frame_count,const uint8_t* packet,size_t packet_size) {
 	const size_t frame_size[] = { EVRC8K_EIGHT_SIZE,EVRC8K_CUSTOM_SIZE,EVRC8K_HALF_SIZE,EVRC8K_FULL_SIZE };
 	size_t frame_count = 0;
 	size_t i = 0;
@@ -93,7 +93,7 @@ size_t evrc8k_packet_unpacket(Evrc8KFrame* frames,size_t max_frame_count,const u
 	return EVRC8K_PACKET_HEADER_SIZE(frame_count) + data_size;
 }
 
-size_t evrc8k_frames_of_packet(const uint8_t* packet,size_t size) {
+DLL_PUBLIC size_t evrc8k_frames_of_packet(const uint8_t* packet,size_t size) {
 	size_t frame_count = *packet;
 	if( EVRC8K_PACKET_HEADER_SIZE(frame_count) + frame_count * EVRC8K_EIGHT_SIZE <= size )
 		return frame_count;
@@ -102,7 +102,7 @@ size_t evrc8k_frames_of_packet(const uint8_t* packet,size_t size) {
 }
 
 
-int evrc8k_packet_init_parser(const uint8_t* packet,size_t packet_size,Evrc8KPacketParser* parser) {
+DLL_PUBLIC int evrc8k_packet_init_parser(const uint8_t* packet,size_t packet_size,Evrc8KPacketParser* parser) {
 	const size_t frame_size[] = { EVRC8K_EIGHT_SIZE,EVRC8K_CUSTOM_SIZE,EVRC8K_HALF_SIZE,EVRC8K_FULL_SIZE };
 	if( NULL == parser || NULL == packet || packet_size < 4 )
 		return 0;
@@ -120,7 +120,7 @@ int evrc8k_packet_init_parser(const uint8_t* packet,size_t packet_size,Evrc8KPac
 	return 1;
 }
 
-int evrc8k_packet_next_frame(Evrc8KPacketParser* parser) {
+DLL_PUBLIC int evrc8k_packet_next_frame(Evrc8KPacketParser* parser) {
 	const size_t frame_size[] = { EVRC8K_EIGHT_SIZE,EVRC8K_CUSTOM_SIZE,EVRC8K_HALF_SIZE,EVRC8K_FULL_SIZE };
 
 	if( NULL == parser )
@@ -138,7 +138,7 @@ int evrc8k_packet_next_frame(Evrc8KPacketParser* parser) {
 	return 1;
 }
 
-int evrc8k_packet_init_appender(uint8_t* buffer,size_t buffer_size,size_t frame_count,Evrc8KPacketAppender* appender) {
+DLL_PUBLIC int evrc8k_packet_init_appender(uint8_t* buffer,size_t buffer_size,size_t frame_count,Evrc8KPacketAppender* appender) {
 	
 	if( NULL == buffer || buffer_size < 4 || frame_count == 0 || frame_count > 255 || NULL == appender )
 		return 0;
@@ -156,7 +156,7 @@ int evrc8k_packet_init_appender(uint8_t* buffer,size_t buffer_size,size_t frame_
 	return 1;
 }
 
-int evrc8k_packet_append_frame_raw(Evrc8KPacketAppender* appender,uint8_t rate,const uint8_t* frame) {
+DLL_PUBLIC int evrc8k_packet_append_frame_raw(Evrc8KPacketAppender* appender,uint8_t rate,const uint8_t* frame) {
 	const size_t frame_size[] = { EVRC8K_EIGHT_SIZE,EVRC8K_CUSTOM_SIZE,EVRC8K_HALF_SIZE,EVRC8K_FULL_SIZE };
 
 	if( NULL == appender || NULL == frame || rate > 3 )
@@ -176,7 +176,7 @@ int evrc8k_packet_append_frame_raw(Evrc8KPacketAppender* appender,uint8_t rate,c
 }
 
 
-int evrc8k_packet_append_frame(Evrc8KPacketAppender* appender,const Evrc8KFrame* frame) {
+DLL_PUBLIC int evrc8k_packet_append_frame(Evrc8KPacketAppender* appender,const Evrc8KFrame* frame) {
 	if( NULL == appender || NULL == frame || frame->rate > 3 )
 		return 0;
 	return evrc8k_packet_append_frame_raw(appender,frame->rate,frame->bits);

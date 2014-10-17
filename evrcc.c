@@ -1,4 +1,3 @@
-#include "evrcc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +13,8 @@
 #include "ns127.h"
 #include "rda.h"
 
-#include "evrcpacket.h"
+#include "evrcc/evrcc.h"
+#include "evrcc/evrcpacket.h"
 
 #define  SPEECH_FRAME_SAMPLES       160
 #define  LOOKAHEAD_LEN              80
@@ -302,7 +302,6 @@ int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_
 	Evrc8KPacketParser parser;
 	uint8_t rate = 0;
 	size_t frame_size = 0;
-	size_t writedbytes = 0;
 
 	if( NULL == c || NULL == packet || packet_bytes == 0 || NULL == speech )
 		return EVRC_CODEC_ERROR;
