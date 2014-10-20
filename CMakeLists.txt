@@ -4,12 +4,58 @@ project(evrcc)
 include(CMakeStdOpt)
 
 set(DSP_MATH_DIR dspmath)
-set(DSP_MATH_SRC
-	${DSP_MATH_DIR}/mathevrc.c 
-	${DSP_MATH_DIR}/mathadv.c
-	${DSP_MATH_DIR}/ehwutl.c
-	${DSP_MATH_DIR}/globdefs.c
-	${DSP_MATH_DIR}/mathdp31.c)
+
+if( ANDROID )
+	enable_language(ASM)
+	set(CMAKE_ASM_FLAGS "-marm -march=armv7-a -mcpu=generic-armv7-a -mthumb-interwork -mlittle-endian -mfpu=neon -mfloat-abi=softfp")
+	set(DSP_MATH_SRC
+		dsp_arm/abs_s.s 
+		dsp_arm/dsp_math.c 
+		dsp_arm/l_add.s 
+		dsp_arm/l_sub.s	
+		dsp_arm/l_mac.s	
+		dsp_arm/l_msu.s 
+		dsp_arm/l_shr.s 
+		dsp_arm/l_shl.s  
+		dsp_arm/divide_s.s 
+		dsp_arm/l_abs.s 
+		dsp_arm/l_mult.s  
+		dsp_arm/mac_r.s 
+		dsp_arm/sub.s 
+		dsp_arm/add.s 
+		dsp_arm/mult_r.s 
+		dsp_arm/negate.s 
+		dsp_arm/norm_s.s 
+		dsp_arm/shr_r.s 
+		dsp_arm/shift_r.s 
+		dsp_arm/msu_r.s 
+		dsp_arm/l_negate.s 
+		dsp_arm/l_shr_r.s 
+		dsp_arm/l_shift_r.s 
+		dsp_arm/norm_l.s 
+		dsp_arm/mult.s 
+		dsp_arm/round32.s 
+		dsp_arm/shl.s 
+		dsp_arm/shr.s 
+		dsp_arm/saturate.s 
+		dsp_arm/l_mpy_ls.s 
+		dsp_arm/l_mpy_ll.s 
+		dsp_arm/div_32.s 
+		dsp_arm/fft_tabs.s 
+		dsp_arm/c_fft.s
+		dspmath/mathadv.c
+		dspmath/ehwutl.c
+		dspmath/globdefs.c
+	)
+else()
+	set(DSP_MATH_SRC
+		${DSP_MATH_DIR}/mathevrc.c 
+		${DSP_MATH_DIR}/mathadv.c
+		${DSP_MATH_DIR}/ehwutl.c
+		${DSP_MATH_DIR}/globdefs.c
+		${DSP_MATH_DIR}/mathdp31.c)
+endif()
+
 
 set(CODE_DIR code)
 set(CODE_SRC 
@@ -74,8 +120,7 @@ set(EVRCC_SRC ${DSP_MATH_SRC} ${CODE_SRC} evrcc.c evrcpacket.c)
 add_library(evrcc SHARED ${EVRCC_SRC} ${EVRCC_HEADER})
 target_compile_options(evrcc PRIVATE "-fvisibility=hidden")
 target_include_directories(evrcc 
-	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 	PRIVATE ${DSP_MATH_DIR}
 	PRIVATE ${CODE_DIR}
 	)
