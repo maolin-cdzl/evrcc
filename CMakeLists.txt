@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 project(evrcc)
 
 include(CMakeStdOpt)
@@ -127,12 +127,12 @@ target_include_directories(evrcc
 
 install(TARGETS evrcc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
-target_link_libraries(evrcc m)
+target_link_libraries(evrcc PUBLIC m)
 
 if( BUILD_CODER )
 	add_executable(evrc_codec evrc_codec.cpp)
-	target_link_libraries(evrc_codec evrcc)
-	target_link_libraries(evrc_codec m tcmalloc_and_profiler) 
+	target_link_libraries(evrc_codec LINK_PRIVATE evrcc)
+	target_link_libraries(evrc_codec PRIVATE tcmalloc_and_profiler) 
 	install(TARGETS evrc_codec DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 endif()
 
