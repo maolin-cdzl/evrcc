@@ -317,7 +317,7 @@ Longword fnLog2(Longword L_Input)
 	    swC0 = -0x2b2a, swC1 = 0x7fc5, swC2 = -0x54d0;
 
 	Shortword siShiftCnt, swInSqrd, swIn;
-	Longword LwIn, Ltemp, lwInSqrd;
+	Longword LwIn;
 
 /*_________________________________________________________________________
  |                                                                         |

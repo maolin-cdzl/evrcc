@@ -99,7 +99,6 @@ void mod(INT16 *residualm,
 {
 	INT16 shiftr2;
 	INT16 sfstart, sfend;
-	INT16 Shift;
 	INT16 picktoav;
 
 	while (*dpm < subframel)
@@ -113,7 +112,6 @@ void mod(INT16 *residualm,
 		{
 			shiftr2 = 0;
 		}
-		Shift = *accshift;
 
 		modifyorig(residualm, accshift, beta, dpm, shiftr2, resolution, Dresidual, residual, sfstart, sfend);
 

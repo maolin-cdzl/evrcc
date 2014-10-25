@@ -160,9 +160,6 @@ static Shortword phs_tbl[] =
 
 };
 
-static Shortword ii_table[] =
-{SIZE / 2, SIZE / 4, SIZE / 8, SIZE / 16, SIZE / 32, SIZE / 64};
-
 /* FFT/IFFT function for complex sequences */
 
 /*
@@ -171,7 +168,13 @@ static Shortword ii_table[] =
  * imaginary part for each sample.  The counters are therefore
  * incremented by two to access the complex valued samples.
  */
+
+void c_fft(Shortword * farray_ptr, Shortword isign);
 #ifndef ANDROID
+
+static Shortword ii_table[] =
+{SIZE / 2, SIZE / 4, SIZE / 8, SIZE / 16, SIZE / 32, SIZE / 64};
+
 void c_fft(Shortword * farray_ptr, Shortword isign)
 {
 
@@ -286,7 +289,7 @@ void r_fft(Shortword * farray_ptr, Shortword isign)
 {
 
 	Shortword ftmp1_real, ftmp1_imag, ftmp2_real, ftmp2_imag;
-	Longword Lftmp1_real, Lftmp1_imag, Lftmp2_real, Lftmp2_imag;
+	Longword Lftmp1_real, Lftmp1_imag; //noused ,Lftmp2_real, Lftmp2_imag;
 	Shortword i, j;
 	Longword Ltmp1, Ltmp2;
 
@@ -312,8 +315,8 @@ void r_fft(Shortword * farray_ptr, Shortword isign)
 
 			Lftmp1_real = L_deposit_h(ftmp1_real);
 			Lftmp1_imag = L_deposit_h(ftmp1_imag);
-			Lftmp2_real = L_deposit_h(ftmp2_real);
-			Lftmp2_imag = L_deposit_h(ftmp2_imag);
+			//noused Lftmp2_real = L_deposit_h(ftmp2_real);
+			//noused Lftmp2_imag = L_deposit_h(ftmp2_imag);
 
 			Ltmp1 = L_sub(L_mult(ftmp2_real, phs_tbl[i]), L_mult(ftmp2_imag, phs_tbl[i + 1]));
 			*(farray_ptr + i) = round32(L_shr(L_add(Lftmp1_real, Ltmp1), 1));
@@ -349,8 +352,8 @@ void r_fft(Shortword * farray_ptr, Shortword isign)
 
 			Lftmp1_real = L_deposit_h(ftmp1_real);
 			Lftmp1_imag = L_deposit_h(ftmp1_imag);
-			Lftmp2_real = L_deposit_h(ftmp2_real);
-			Lftmp2_imag = L_deposit_h(ftmp2_imag);
+			//noused Lftmp2_real = L_deposit_h(ftmp2_real);
+			//noused Lftmp2_imag = L_deposit_h(ftmp2_imag);
 
 			Ltmp1 = L_add(L_mult(ftmp2_real, phs_tbl[i]), L_mult(ftmp2_imag, phs_tbl[i + 1]));
 			*(farray_ptr + i) = round32(L_shr(L_add(Lftmp1_real, Ltmp1), 1));

@@ -346,7 +346,6 @@ void GetExc800bps(
 	INT16 k, j;
 	INT16 D;
 	INT32 tmp;
-	INT32 ltmp;
 	INT16 stmp;
 	INT16 *ptr;
 	INT32 sum, lscale;
@@ -418,7 +417,6 @@ void GetExc800bps(
 
 			if (tmp < sum)
 			{
-				ltmp = sum;
 				sum = tmp;
 				*best = k;
 			}

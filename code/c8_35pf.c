@@ -155,7 +155,7 @@ void code_8i55_35bits(
 	Shortword *h, *h_inv, *ptr_h1, *ptr_h2, *ptr_hf;
 
 	Shortword sign[L_SUBFR], vec[L_SUBFR];
-	Shortword ip[NB_PULSE], codvec[NB_PULSE + 1], pos_max[NB_TRACK];
+	Shortword ip[NB_PULSE], codvec[NB_PULSE + 1]; //noused, pos_max[NB_TRACK];
 	Shortword cor_x[NB_POS], cor_y[NB_POS];
 	Shortword h_buf[4 * L_SUBFR];
 	Shortword rrixix[NB_PULSE][NB_POS], rrixiy[NB_PULSE][MSIZE];
@@ -244,7 +244,7 @@ void code_8i55_35bits(
 				pos = i;
 			}
 		}
-		pos_max[k] = pos;
+		//noused pos_max[k] = pos;
 	}
 
 	/* select 6 positions per track (criterion: max of corr.) */
@@ -365,8 +365,10 @@ void code_8i55_35bits(
 	/* Divide all elements of rrixix[][] by 2. */
 
 	p0 = &rrixix[0][0];
-	for (i = 0; i < L_SUBFR; i++)
-		*p0++ = shr(*p0, 1);
+	for (i = 0; i < L_SUBFR; i++) {
+		*p0 = shr(*p0, 1);
+		p0++;
+	}
 
  /*------------------------------------------------------------*
   * Compute rrixiy[][] needed for the codebook search.         *
@@ -514,7 +516,8 @@ void code_8i55_35bits(
 
 			for (j = ((k + 1) % NB_TRACK); j < L_SUBFR; j += STEP)
 			{
-				*p0++ = mult(*p0, psign[j]);
+				*p0 = mult(*p0, psign[j]);
+				p0++;
 			}
 		}
 	}

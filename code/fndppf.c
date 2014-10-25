@@ -115,7 +115,7 @@ void fndppf(INT16 *delay, INT16 *beta, INT16 *buf, INT16 dmin, INT16 dmax, INT16
 	static INT16 memory[3];
 	static int FirstTime = 1;
 	INT16 Lsum_scale;
-	INT16 shift, Lcorr_scale, Lcmax_scale;
+	INT16 Lcorr_scale, Lcmax_scale;
 	INT16 n1, n2, nq, nq1;
 	INT32 Ltempf;
 	/* init static variables (should be in init routine for implementation) */
@@ -142,7 +142,6 @@ void fndppf(INT16 *delay, INT16 *beta, INT16 *buf, INT16 dmin, INT16 dmax, INT16
 		Ltempf = L_msu(Ltempf, memory[2], a[2]);
 		Ltempf = L_shl(Ltempf, 2);
 
-		shift = 0;
 		if ((i + 1) % 4 == 0)
 		{
 			Lsum = L_add(Ltempf, L_deposit_h(memory[2]));

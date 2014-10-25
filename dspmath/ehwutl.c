@@ -81,8 +81,6 @@ double sFrct[32 + 8];
 double dFrct[32 + 8];
 static double maxSfrct;
 static double minSfrct;
-static int msb ={15};
-static int lsb ={0};
 char line[200];
 
 static void init()
@@ -227,8 +225,7 @@ void fDispSns(struct NormSw snsIn)
 Longword toLwFloat(double dIn)
 {
 	INT32 l1;
-	INT32 liExt, liInt;
-	UINT32 ulExt = 0;
+	INT32 liInt;
 	Longword L_Out;
 
 	if (dIn > -(double) (1 << 0) / 2147483648.0 && dIn < 0)

@@ -225,8 +225,10 @@ void code_3i54_10bits(
 	/* Divide all elements of rrixix[][] by 2. */
 
 	p0 = &rrixix[0][0];
-        for (i = 0; i < NB_PULSE*NB_POS ; i++)
-		*p0++ = shr(*p0, 1);
+    for (i = 0; i < NB_PULSE*NB_POS ; i++) {
+		*p0 = shr(*p0,1);
+		p0++;
+	}
 
  /*------------------------------------------------------------*
   * Compute rrixiy[][] needed for the codebook search.         *

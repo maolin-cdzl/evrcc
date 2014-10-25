@@ -301,7 +301,6 @@ int evrc_decoder_decode_from_stream(void* c,const uint8_t* stream,size_t stream_
 int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_bytes,int16_t* speech,size_t speech_max_samples) {
 	Evrc8KPacketParser parser;
 	uint8_t rate = 0;
-	size_t frame_size = 0;
 
 	if( NULL == c || NULL == packet || packet_bytes == 0 || NULL == speech )
 		return EVRC_CODEC_ERROR;
@@ -315,7 +314,6 @@ int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_
 
 	do {
 		rate = PACKET_TO_EVRC_RATE(parser.rate);
-		frame_size = FRAME_DATA_SIZE[ rate & 0xF ];
 
 		if( evrc_decoder_decode_frame_raw(c,parser.frame,parser.frame_size,rate,speech) <= 0 )
             return EVRC_CODEC_ERROR;

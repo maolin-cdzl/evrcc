@@ -181,14 +181,8 @@ void decode(
 {
 	/*....(local) variables.... */
 	short local_rate;
-    short acbgain_flag;
-    short *oP;
-    short subframesize;
-    short j;
-
 
 	/*....execute.... */
-    acbgain_flag = 1; /* initialize to get rid of compiler warning */
 	local_rate = rate;
 	FrameErrorHandler(&local_rate, codeBuf);  /* check frame for some errors */
 	SetDecodeRate(local_rate);
@@ -196,6 +190,12 @@ void decode(
 	fer_flag = erasureFlag | errorFlag;
 
 #if 0
+    short subframesize;
+    short j;
+    short *oP;
+    short acbgain_flag;
+    acbgain_flag = 1; /* initialize to get rid of compiler warning */
+
 	if( tty_option == TTY_NO_GAIN )
     {
         if( local_rate == 4 )
