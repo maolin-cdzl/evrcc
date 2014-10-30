@@ -81,6 +81,7 @@ DLL_PUBLIC int evrc8k_packet_init_appender(uint8_t* buffer,size_t buffer_size,si
 DLL_PUBLIC int evrc8k_packet_append_frame(Evrc8KPacketAppender* appender,const Evrc8KFrame* frame);
 DLL_PUBLIC int evrc8k_packet_append_frame_raw(Evrc8KPacketAppender* appender,uint8_t rate,const uint8_t* frame);
 
+DLL_PUBLIC int evrc8k_rate_by_size(size_t frame_size);
 
 #ifdef __cplusplus
 }

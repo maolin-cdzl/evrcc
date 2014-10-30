@@ -182,3 +182,25 @@ DLL_PUBLIC int evrc8k_packet_append_frame(Evrc8KPacketAppender* appender,const E
 	return evrc8k_packet_append_frame_raw(appender,frame->rate,frame->bits);
 }
 
+DLL_PUBLIC int evrc8k_rate_by_size(size_t frame_size) {
+	int result;
+	switch( frame_size ) {
+		case EVRC8K_EIGHT_SIZE :
+			result = EVRC8K_RATE_EIGHT;
+			break;
+		case EVRC8K_CUSTOM_SIZE :
+			result = EVRC8K_RATE_CUSTOM;
+			break;
+		case EVRC8K_HALF_SIZE :
+			result = EVRC8K_RATE_HALF;
+			break;
+		case EVRC8K_FULL_SIZE :
+			result = EVRC8K_RATE_FULL;
+			break;
+		default :
+			result = -1;
+			break;
+	}
+	return result;
+}
+
