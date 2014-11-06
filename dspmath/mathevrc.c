@@ -813,7 +813,7 @@ Longword L_deposit_l(Shortword var1)
 Longword L_mac(Longword L_var3, Shortword var1, Shortword var2)
 {
 	Longword L_product;
-	double dlwA, dlwB;
+//	double dlwA, dlwB;
 
     OP_COUNT(1);        /* Complexity Count -- LT 6/96 */
 
@@ -889,7 +889,7 @@ Longword L_mac(Longword L_var3, Shortword var1, Shortword var2)
 Longword L_msu(Longword L_var3, Shortword var1, Shortword var2)
 {
 	Longword L_product;
-	double dlwA, dlwB;
+//	double dlwA, dlwB;
 
     OP_COUNT(1);        /* Complexity Count -- LT 6/96 */
 
