@@ -101,6 +101,11 @@ static int evrc_encoder_encode_frame(EvrcEncoderContext* context,int16_t* speech
 	return FRAME_SIZE[rate];
 }
 
+int evrc_encoder_encode_raw(void* c,int16_t* pcm_frame,uint8_t* bits) {
+	EvrcEncoderContext* context = (EvrcEncoderContext*)c;
+	return evrc_encoder_encode_frame(context,pcm_frame,bits) - 2;
+}
+
 int evrc_encoder_encode_to_stream(void* c,int16_t* speech,size_t speech_samples,uint8_t* bits,size_t bits_max_bytes) {
 	EvrcEncoderContext* context = (EvrcEncoderContext*)c;
 	size_t encode_samples = 0;

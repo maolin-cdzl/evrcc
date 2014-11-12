@@ -26,6 +26,7 @@ DLL_PUBLIC int evrc_stream_to_packet(const uint8_t* stream,size_t frame_count,ui
 // encoder interface
 DLL_PUBLIC void* evrc_encoder_init(int16_t min_rate,int16_t max_rate,int16_t noise_suppression);
 DLL_PUBLIC void evrc_encoder_uninit(void* c);
+DLL_PUBLIC int evrc_encoder_encode_raw(void* c,int16_t* pcm_frame,uint8_t* bits);
 DLL_PUBLIC int evrc_encoder_encode_to_packet(void* c,int16_t* speech,size_t speech_samples,uint8_t* packet,size_t packet_max_bytes);
 DLL_PUBLIC int evrc_encoder_encode_to_stream(void* c,int16_t* speech,size_t speech_samples,uint8_t* bits,size_t bits_max_bytes);
 DLL_PUBLIC int evrc_encoder_max_encode(void* c,size_t speech_samples);
