@@ -158,24 +158,46 @@ int evrc_decoder_stream_max_sample(const uint8_t* bits,size_t bits_bytes) {
 	return evrc_get_stream_frame_count(bits,bits_bytes) * SPEECH_FRAME_SAMPLES ;
 }
 
-static int evrc_decoder_decode_frame_raw(void* c, const uint8_t* bits,size_t bits_bytes,uint8_t rate,int16_t* speech) {
+static int8_t evrc_raw_rate_by_size(size_t size) {
+	switch( size ) {
+		case 2 :
+			return 1;
+		case 10 :
+			return 3;
+		case 22 :
+			return 4;
+		default :
+			return -1;
+	}
+}
+
+int evrc_decoder_decode_frame_raw(void* c, const uint8_t* bits,size_t bits_bytes,int16_t* speech) {
 	const int16_t* bits_16 = (int16_t*)bits;
 	size_t i = 0;
+	int8_t rate;
 	int16_t bits_frame[11];
 
-	if( rate > 0x4 || FRAME_DATA_SIZE[rate] == 0 || FRAME_DATA_SIZE[rate] > bits_bytes ) return 0;
+	rate = evrc_raw_rate_by_size(bits_bytes);
+	if( rate <= 0 )
+		return 0;
 	memset(bits_frame,0,sizeof(int16_t)*11);
 
 	for(i=0;i< FRAME_DATA_WORDS[rate];++i) {
 		bits_frame[i] = SWAP_16(bits_16[i]);
 	}
 	decode((int16_t*)bits_frame, rate, /*post_filter*/ 0,speech);
-	return FRAME_SIZE[rate];
+	return 160;
 }
 
 int evrc_decoder_decode_stream_frame(void* c, const uint8_t* bits,size_t bits_bytes,int16_t* speech) {
-	int16_t rate = bits[0];
-	return evrc_decoder_decode_frame_raw(c,bits + sizeof(int16_t),bits_bytes - sizeof(int16_t),rate,speech);
+	int8_t rate = bits[0];
+	if( FRAME_SIZE[rate] > bits_bytes )
+		return 0;
+	if( evrc_decoder_decode_frame_raw(c,bits + sizeof(int16_t),bits_bytes - sizeof(int16_t),speech) > 0 ) {
+		return FRAME_SIZE[rate];
+	} else {
+		return 0;
+	}
 }
 
 int evrc_decoder_stream_frame_bytes(const uint8_t* bits) {
@@ -291,7 +313,7 @@ int evrc_decoder_decode_from_stream(void* c,const uint8_t* stream,size_t stream_
 		if( stream + 2 + frame_size > s_end )
 			return EVRC_CODEC_ERROR;
 
-		if( evrc_decoder_decode_frame_raw(c,stream + 2,frame_size,rate,speech) <= 0 )
+		if( evrc_decoder_decode_frame_raw(c,stream + 2,frame_size,speech) <= 0 )
 			return EVRC_CODEC_ERROR;
 
 		stream += (2 + frame_size);
@@ -305,7 +327,6 @@ int evrc_decoder_decode_from_stream(void* c,const uint8_t* stream,size_t stream_
 
 int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_bytes,int16_t* speech,size_t speech_max_samples) {
 	Evrc8KPacketParser parser;
-	uint8_t rate = 0;
 
 	if( NULL == c || NULL == packet || packet_bytes == 0 || NULL == speech )
 		return EVRC_CODEC_ERROR;
@@ -318,9 +339,7 @@ int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_
 		return EVRC_CODEC_BUFFER_SMALL;
 
 	do {
-		rate = PACKET_TO_EVRC_RATE(parser.rate);
-
-		if( evrc_decoder_decode_frame_raw(c,parser.frame,parser.frame_size,rate,speech) <= 0 )
+		if( evrc_decoder_decode_frame_raw(c,parser.frame,parser.frame_size,speech) <= 0 )
             return EVRC_CODEC_ERROR;
 		speech += SPEECH_FRAME_SAMPLES ;
 	} while( evrc8k_packet_next_frame(&parser) );

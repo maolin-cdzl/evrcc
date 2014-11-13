@@ -36,6 +36,7 @@ DLL_PUBLIC int evrc_encoder_max_encode(void* c,size_t speech_samples);
 // decoder interface
 DLL_PUBLIC void* evrc_decoder_init();
 DLL_PUBLIC void evrc_decoder_uninit(void* c);
+DLL_PUBLIC int evrc_decoder_decode_frame_raw(void* c, const uint8_t* bits,size_t bits_bytes,int16_t* speech);
 DLL_PUBLIC int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_bytes,int16_t* speech,size_t speech_max_samples);
 
 DLL_PUBLIC int evrc_decoder_decode_from_stream(void* c,const uint8_t* stream,size_t stream_bytes,int16_t* speech,size_t speech_max_samples);
