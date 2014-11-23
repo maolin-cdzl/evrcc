@@ -63,7 +63,7 @@ int evrc_encoder_max_encode(void* c,size_t speech_samples) {
 	return (speech_samples / SPEECH_FRAME_SAMPLES ) * FRAME_SIZE[ context->max_rate ];
 }
 
-static int evrc_encoder_encode_frame(EvrcEncoderContext* context,int16_t* speech,uint8_t* bits) {
+static uint8_t evrc_encoder_encode_frame(EvrcEncoderContext* context,int16_t* speech,uint8_t* bits) {
 	int k;
 	uint8_t rate = 0;
 	int16_t* bits_16 = NULL;
@@ -86,10 +86,6 @@ static int evrc_encoder_encode_frame(EvrcEncoderContext* context,int16_t* speech
 
 	context->beta = pre_encode(speech, context->R);
 	rate =  (uint8_t)select_rate(context->R,context->max_rate,context->min_rate,context->beta);
-	*bits = rate;
-	bits += 1;
-	*bits = FRAME_DATA_SIZE[rate];
-	bits += 1;
 	
 	bits_16 = (int16_t*)bits;
 	
@@ -98,12 +94,13 @@ static int evrc_encoder_encode_frame(EvrcEncoderContext* context,int16_t* speech
 	for(k=0;k<FRAME_DATA_WORDS[rate];++k){
 		bits_16[k] = SWAP_16(bits_frame[k]);
 	}
-	return FRAME_SIZE[rate];
+	return rate;
 }
 
 int evrc_encoder_encode_raw(void* c,int16_t* pcm_frame,uint8_t* bits) {
 	EvrcEncoderContext* context = (EvrcEncoderContext*)c;
-	return evrc_encoder_encode_frame(context,pcm_frame,bits) - 2;
+	uint8_t rate = evrc_encoder_encode_frame(context,pcm_frame,bits);
+	return FRAME_DATA_SIZE[rate];
 }
 
 int evrc_encoder_encode_to_stream(void* c,int16_t* speech,size_t speech_samples,uint8_t* bits,size_t bits_max_bytes) {
@@ -111,12 +108,16 @@ int evrc_encoder_encode_to_stream(void* c,int16_t* speech,size_t speech_samples,
 	size_t encode_samples = 0;
 	size_t output_bytes = 0;
 	size_t bytes = 0;
+	uint8_t rate;
 
 	if( c == 0 || speech == 0 || speech_samples < SPEECH_FRAME_SAMPLES || bits == 0 || bits_max_bytes <= 0)
 		return 0;
 	while( encode_samples + SPEECH_FRAME_SAMPLES <= speech_samples && 
 			output_bytes + BITSTREAM_FRAME_MAX_BYTES <= bits_max_bytes ){
-		bytes = evrc_encoder_encode_frame(context,speech,bits);
+		rate = evrc_encoder_encode_frame(context,speech,bits + 2);
+		bits[0] = rate;
+		bits[1] = FRAME_DATA_SIZE[rate];
+		bytes = FRAME_SIZE[rate];
 		output_bytes += bytes;
 		encode_samples += SPEECH_FRAME_SAMPLES;
 		speech += SPEECH_FRAME_SAMPLES;
@@ -281,16 +282,12 @@ int evrc_encoder_encode_to_packet(void* c,int16_t* speech,size_t speech_samples,
 	}
 
 	while( encode_samples + SPEECH_FRAME_SAMPLES <= speech_samples ) { 
-		bytes = evrc_encoder_encode_frame(context,speech,evrc_frame);
-
-		if( bytes <= 0 )
-			return EVRC_CODEC_ERROR;
+		rate = evrc_encoder_encode_frame(context,speech,evrc_frame);
 
 		encode_samples += SPEECH_FRAME_SAMPLES;
 		speech += SPEECH_FRAME_SAMPLES;
 
-		rate = evrc_frame[0];
-		if( ! evrc8k_packet_append_frame_raw(&appender,EVRC_TO_PACKET_RATE(rate),&(evrc_frame[2])) )
+		if( ! evrc8k_packet_append_frame_raw(&appender,EVRC_TO_PACKET_RATE(rate),evrc_frame) )
 			return EVRC_CODEC_ERROR;
 	}
 
@@ -347,6 +344,24 @@ int evrc_decoder_decode_from_packet(void* c,const uint8_t* packet,size_t packet_
 	return parser.frame_count * SPEECH_FRAME_SAMPLES * sizeof(int16_t);
 }
 
+DLL_PUBLIC int evrc8k_3gpp_rate_by_size(size_t frame_size) {
+	int result;
+	switch( frame_size ) {
+		case EVRC8K_EIGHT_SIZE :
+			result = 1;
+			break;
+		case EVRC8K_HALF_SIZE :
+			result = 3;
+			break;
+		case EVRC8K_FULL_SIZE :
+			result = 4;
+			break;
+		default :
+			result = -1;
+			break;
+	}
+	return result;
+}
 
 
 /*

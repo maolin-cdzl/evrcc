@@ -22,6 +22,7 @@ DLL_PUBLIC int evrc_get_stream_frame_count(const uint8_t* bits,size_t bits_bytes
 DLL_PUBLIC int evrc_packet_to_stream(const uint8_t* packet,size_t packet_size,uint8_t* stream,size_t stream_size);
 DLL_PUBLIC int evrc_stream_to_packet(const uint8_t* stream,size_t frame_count,uint8_t* packet,size_t packet_size);
 
+DLL_PUBLIC int evrc8k_3gpp_rate_by_size(size_t frame_size);
 
 // encoder interface
 DLL_PUBLIC void* evrc_encoder_init(int16_t min_rate,int16_t max_rate,int16_t noise_suppression);
