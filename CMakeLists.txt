@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 project(evrcc)
 
-include(CMakeStdOpt)
+include(CMakeCStdOpt)
 
 set(DSP_MATH_DIR dspmath)
 
