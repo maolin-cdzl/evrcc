@@ -125,7 +125,7 @@ target_include_directories(evrcc
 	PRIVATE ${CODE_DIR}
 	)
 
-install(TARGETS evrcc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(TARGETS evrcc LIBRARY DESTINATION ${INSTALL_LIB_DIR})
 
 target_link_libraries(evrcc PUBLIC m)
 
@@ -133,7 +133,7 @@ if( BUILD_CODER )
 	add_executable(evrc_codec evrc_codec.cpp)
 	target_link_libraries(evrc_codec LINK_PRIVATE evrcc)
 	target_link_libraries(evrc_codec PRIVATE tcmalloc_and_profiler) 
-	install(TARGETS evrc_codec DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+	install(TARGETS evrc_codec)
 endif()
 
 if( HAS_BREAKPAD )
