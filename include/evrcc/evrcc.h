@@ -18,6 +18,7 @@ extern "C" {
 static const int	EVRC_CODEC_ERROR		= -1;
 static const int	EVRC_CODEC_BUFFER_SMALL	= -2;
 
+DLL_PUBLIC int evrc_make_comfnose_stream_frame(uint8_t* bits,size_t bits_bytes);
 DLL_PUBLIC int evrc_get_stream_frame_count(const uint8_t* bits,size_t bits_bytes);
 DLL_PUBLIC int evrc_packet_to_stream(const uint8_t* packet,size_t packet_size,uint8_t* stream,size_t stream_size);
 DLL_PUBLIC int evrc_stream_to_packet(const uint8_t* stream,size_t frame_count,uint8_t* packet,size_t packet_size);
