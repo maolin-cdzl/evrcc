@@ -155,15 +155,13 @@ int evrc_get_stream_frame_count(const uint8_t* bits,size_t bits_bytes) {
 	return frame;
 }
 
-int evrc_make_comfnose_stream_frame(uint8_t* bits,size_t bits_bytes) {
-	if( bits_bytes < FRAME_SIZE[3] )
+int evrc_make_comfnose_frame(uint8_t* bits,size_t bits_bytes) {
+	if( bits_bytes < FRAME_DATA_SIZE[3] )
 		return 0;
-	bits[0] = 3;
-	bits[1] = FRAME_DATA_SIZE[3];
-	for(bits_bytes = 2; bits_bytes < FRAME_SIZE[3]; ++bits_bytes) {
+	for(bits_bytes = 0; bits_bytes < FRAME_DATA_SIZE[3]; ++bits_bytes) {
 		bits[bits_bytes] = 0;
 	}
-	return FRAME_SIZE[3];
+	return FRAME_DATA_SIZE[3];
 }
 
 int evrc_decoder_stream_max_sample(const uint8_t* bits,size_t bits_bytes) {
